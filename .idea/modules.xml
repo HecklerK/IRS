@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/IRS/IRS.iml" filepath="$PROJECT_DIR$/IRS/IRS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IRS_Server/IRS_Server.iml" filepath="$PROJECT_DIR$/IRS_Server/IRS_Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Курсавая.iml" filepath="$PROJECT_DIR$/.idea/Курсавая.iml" />
+    </modules>
+  </component>
+</project>
