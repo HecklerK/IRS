@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/IRS/IRS.iml" filepath="$PROJECT_DIR$/IRS/IRS.iml" />
       <module fileurl="file://$PROJECT_DIR$/IRS_Server/IRS_Server.iml" filepath="$PROJECT_DIR$/IRS_Server/IRS_Server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/Курсавая.iml" filepath="$PROJECT_DIR$/.idea/Курсавая.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Курсовая.iml" filepath="$PROJECT_DIR$/.idea/Курсовая.iml" />
     </modules>
   </component>
 </project>

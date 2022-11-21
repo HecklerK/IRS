@@ -1,12 +1,14 @@
 package irs.server.irs_server.controllers;
 
 
+import irs.server.irs_server.models.Order;
 import irs.server.irs_server.models.Section;
 import irs.server.irs_server.models.User;
 import irs.server.irs_server.payload.request.SectionRequest;
 import irs.server.irs_server.payload.request.SectionUpdateRequest;
 import irs.server.irs_server.payload.response.MessageResponse;
 import irs.server.irs_server.payload.response.SectionsResponse;
+import irs.server.irs_server.repository.OrderRepository;
 import irs.server.irs_server.repository.SectionRepository;
 import irs.server.irs_server.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +33,14 @@ public class SectionController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    OrderRepository orderRepository;
+
     @GetMapping("/getOrderSections")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<SectionsResponse> getOrderSections()
     {
-        List<Section> sections = sectionRepository.findAllByOrderByOrder();
+        List<Section> sections = sectionRepository.findAllByOrder();
         SectionsResponse sectionsResponse = new SectionsResponse();
         sectionsResponse.setSectionList(sections);
 
@@ -43,6 +48,29 @@ public class SectionController {
             return new ResponseEntity<>(sectionsResponse, HttpStatus.OK);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/getSaction/{sectionId}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> getSection(@PathVariable Long sectionId)
+    {
+        if (sectionRepository.existsById(sectionId)){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Section not found!"));
+        }
+
+        try {
+            Section section = sectionRepository.findById(sectionId).get();
+
+            return new ResponseEntity<>(section, HttpStatus.OK);
+        }
+        catch (Exception ex)
+        {
+            return ResponseEntity
+                    .internalServerError()
+                    .body("Error: " + ex.getMessage());
         }
     }
 
@@ -62,6 +90,10 @@ public class SectionController {
             Section section = new Section(sectionRequest.getHeader(), sectionRequest.getBody(), sectionRequest.getVisible(), user.get());
 
             sectionRepository.save(section);
+
+            Order order = new Order(section);
+
+            orderRepository.save(order);
         }
         catch (Exception ex)
         {

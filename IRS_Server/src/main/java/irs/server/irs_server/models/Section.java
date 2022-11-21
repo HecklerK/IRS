@@ -1,5 +1,6 @@
 package irs.server.irs_server.models;
 
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.relational.core.sql.In;
 
 import javax.persistence.*;
@@ -17,7 +18,9 @@ public class Section {
     private String header;
     @Size(max = 8000)
     private String body;
-    private Long order;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
     private Boolean isVisible;
     private Instant createdOn;
     @ManyToOne
@@ -63,11 +66,11 @@ public class Section {
         this.body = body;
     }
 
-    public Long getOrder() {
+    public Order getOrder() {
         return order;
     }
 
-    public void setOrder(Long order) {
+    public void setOrder(Order order) {
         this.order = order;
     }
 
