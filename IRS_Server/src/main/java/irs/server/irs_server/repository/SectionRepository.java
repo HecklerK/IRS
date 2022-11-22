@@ -11,6 +11,6 @@ import java.util.List;
 public interface SectionRepository extends JpaRepository<Section, Long> {
     List<Section> findAll();
 
-    @Query("SELECT s FROM Section s join s.order o order by o.number")
+    @Query("SELECT s FROM Order o join o.section s order by o.number")
     List<Section> findAllByOrder();
 }

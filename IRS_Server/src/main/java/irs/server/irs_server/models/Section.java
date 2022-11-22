@@ -18,9 +18,6 @@ public class Section {
     private String header;
     @Size(max = 8000)
     private String body;
-    @OneToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
     private Boolean isVisible;
     private Instant createdOn;
     @ManyToOne
@@ -64,14 +61,6 @@ public class Section {
 
     public void setBody(String body) {
         this.body = body;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Boolean getVisible() {

@@ -5,7 +5,7 @@ import irs.server.irs_server.models.Section;
 import java.util.List;
 
 public class SectionsResponse {
-    @JsonProperty(value = "section", required = true)
+    @JsonProperty(value = "sections", required = true)
     List<Section> sectionList;
 
     public SectionsResponse() {

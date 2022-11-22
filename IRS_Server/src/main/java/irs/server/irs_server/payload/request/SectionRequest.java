@@ -9,7 +9,6 @@ public class SectionRequest {
     @Size(max = 8000)
     private String body;
     private Boolean isVisible;
-    @NotBlank
     private Long userId;
 
     public Long getUserId() {

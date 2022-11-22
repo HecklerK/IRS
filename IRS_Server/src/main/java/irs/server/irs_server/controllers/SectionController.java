@@ -55,7 +55,7 @@ public class SectionController {
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> getSection(@PathVariable Long sectionId)
     {
-        if (sectionRepository.existsById(sectionId)){
+        if (!sectionRepository.existsById(sectionId)){
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Section not found!"));
@@ -78,7 +78,7 @@ public class SectionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createSection(@Valid @RequestBody SectionRequest sectionRequest)
     {
-        if (userRepository.existsById(sectionRequest.getUserId())) {
+        if (!userRepository.existsById(sectionRequest.getUserId())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: User not found!"));
@@ -109,13 +109,13 @@ public class SectionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateSection(@Valid @RequestBody SectionUpdateRequest sectionUpdateRequest)
     {
-        if (userRepository.existsById(sectionUpdateRequest.getUserId())) {
+        if (!userRepository.existsById(sectionUpdateRequest.getUserId())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: User not found!"));
         }
 
-        if (sectionRepository.existsById(sectionUpdateRequest.getId())) {
+        if (!sectionRepository.existsById(sectionUpdateRequest.getId())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: Section not found!"));
