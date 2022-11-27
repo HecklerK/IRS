@@ -43,7 +43,7 @@ public class SectionService {
                 .build();
     }
 
-    public Mono<SectionsResponse> getOrderSections(String token)
+    public SectionsResponse getOrderSections(String token)
     {
         return client
                 .get()
@@ -52,7 +52,8 @@ public class SectionService {
                 .retrieve()
                 .onStatus(HttpStatus::isError,
                         (it -> handleError(it.statusCode().getReasonPhrase())))
-                .bodyToMono(SectionsResponse.class);
+                .bodyToMono(SectionsResponse.class)
+                .block();
     }
 
     private Mono<? extends Throwable> handleError(String message) {

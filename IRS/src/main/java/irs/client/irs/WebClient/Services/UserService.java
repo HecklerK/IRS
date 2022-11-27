@@ -46,6 +46,19 @@ public class UserService {
                 .doOnError(error -> handleError(error.getMessage()));
     }
 
+    public JwtResponse authenticateUserSync(LoginRequest loginRequest)
+    {
+        return client
+                .post()
+                .uri("http://localhost:3456/api/auth/signin")
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(loginRequest))
+                .retrieve()
+                .bodyToMono(JwtResponse.class)
+                .doOnError(error -> handleError(error.getMessage()))
+                .block();
+    }
+
     private Mono<? extends Throwable> handleError(String message) {
         return Mono.error(Exception::new);
     }
