@@ -64,6 +64,7 @@
         <properties>
           <background color="-12564920"/>
           <focusPainted value="false"/>
+          <font name="Source Code Pro" size="14"/>
           <foreground color="-852481"/>
           <text value="Поиск"/>
         </properties>
@@ -79,6 +80,7 @@
         <properties>
           <background color="-14012366"/>
           <contentType value="text/html"/>
+          <editable value="false"/>
           <focusCycleRoot value="false"/>
           <focusable value="false"/>
           <font name="Source Code Pro" size="24"/>

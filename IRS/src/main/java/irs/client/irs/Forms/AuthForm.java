@@ -1,7 +1,6 @@
 package irs.client.irs.Forms;
 
 import irs.client.irs.WebClient.Services.UserService;
-import irs.server.irs_server.models.User;
 import irs.server.irs_server.payload.request.LoginRequest;
 import irs.server.irs_server.payload.response.JwtResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import java.awt.event.ActionListener;
 public class AuthForm extends JFrame {
     private JTextField tLogin;
     private JPasswordField tPass;
-    private JButton signin;
+    private JButton signInB;
     private JLabel lLogin;
     private JLabel lPass;
     private JPanel panel;
@@ -30,12 +29,12 @@ public class AuthForm extends JFrame {
     public AuthForm(boolean isChangeForm)
     {
         this.isChangeForm = isChangeForm;
-        signin.addActionListener(new ActionListener() {
+        signInB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tLogin.getText().equals("") | tPass.getText().equals("")) {
-                    signin.setForeground(Color.RED);
-                    signin.setText("Заполните поля логин и пароль");
+                    signInB.setForeground(Color.RED);
+                    signInB.setText("Заполните поля логин и пароль");
                     return;
                 }
                 try {
@@ -70,14 +69,14 @@ public class AuthForm extends JFrame {
     {
         if (response.getRoles().contains("ROLE_ADMIN"))
         {
-            changeForm = new ChangeForm(response);
+            changeForm = new ChangeForm(response, loginRequest);
             changeForm.open();
             JFrame.getFrames()[2].dispose();
         }
         else
         {
-            signin.setForeground(Color.RED);
-            signin.setText("У вас нет доступа к изменению");
+            signInB.setForeground(Color.RED);
+            signInB.setText("У вас нет доступа к изменению");
         }
     }
 
@@ -91,8 +90,8 @@ public class AuthForm extends JFrame {
         }
         else
         {
-            signin.setForeground(Color.RED);
-            signin.setText("У вас нет доступа к просмотру");
+            signInB.setForeground(Color.RED);
+            signInB.setText("У вас нет доступа к просмотру");
         }
     }
 

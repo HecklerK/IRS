@@ -87,6 +87,7 @@ public class ViewForm extends JFrame {
             protected void done() {
                 try {
                     sectionsResponse = get();
+                    sectionList.setSelectedIndex(-1);
                     model.clear();
                     model.addAll(sectionsResponse.getSectionList().stream().map(x -> x.getHeader()).toList());
                 } catch (InterruptedException e) {
