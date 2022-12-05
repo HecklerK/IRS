@@ -74,7 +74,22 @@ public class SectionController {
         }
     }
 
-    @PostMapping("/createSection")
+    @GetMapping("/getSearchSactions/{string}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> getSearchSections(@PathVariable String string)
+    {
+        List<Section> sections = sectionRepository.searchAll(string);
+        SectionsResponse sectionsResponse = new SectionsResponse();
+        sectionsResponse.setSectionList(sections);
+
+        if (sections.size() > 0 ) {
+            return new ResponseEntity<>(sectionsResponse, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/createSection")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> createSection(@Valid @RequestBody SectionRequest sectionRequest)
     {

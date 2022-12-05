@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserService {
     @Value("${irs.app.connectionString}")
-    private String Base_URL;
+    private String Base_URL = "http://localhost:3456/api/";
     private WebClient client;
     public UserService()
     {
@@ -38,7 +38,7 @@ public class UserService {
     {
         return client
                 .post()
-                .uri("http://localhost:3456/api/auth/signin")
+                .uri( Base_URL + "auth/signin")
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(loginRequest))
                 .retrieve()
@@ -50,7 +50,7 @@ public class UserService {
     {
         return client
                 .post()
-                .uri("http://localhost:3456/api/auth/signin")
+                .uri( Base_URL + "auth/signin")
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(loginRequest))
                 .retrieve()

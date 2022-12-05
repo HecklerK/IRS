@@ -7,7 +7,7 @@ public class SectionUpdateRequest {
     @NotBlank
     private Long id;
     @NotBlank
-    @Size(min = 3, max = 50)
+    @Size(min = 3, max = 250)
     private String header;
     @Size(max = 8000)
     private String body;

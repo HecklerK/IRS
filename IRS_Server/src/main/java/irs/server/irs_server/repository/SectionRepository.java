@@ -13,4 +13,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 
     @Query("SELECT s FROM Order o join o.section s order by o.number")
     List<Section> findAllByOrder();
+
+    @Query("SELECT s FROM Section s WHERE s.header like %?1% AND s.body like %?1%")
+    List<Section> searchAll(String string);
 }

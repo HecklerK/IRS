@@ -22,12 +22,15 @@ public class ViewForm extends JFrame {
     private JTextPane sectionBody;
     private JList sectionList;
     private JTextPane sectionHeader;
+    private JScrollPane bodyScroll;
     private LoginRequest loginRequest;
     private SectionService sectionService;
     private SectionsResponse sectionsResponse;
     private UserService userService;
     private DefaultListModel<String> model;
     private Timer timer;
+    private Boolean isSearch;
+    private java.util.List<Section> sections;
 
     public ViewForm(JwtResponse response, LoginRequest loginRequest)
     {
@@ -36,10 +39,11 @@ public class ViewForm extends JFrame {
         this.sectionsResponse = new SectionsResponse();
         this.model = new DefaultListModel<>();
         this.sectionList.setModel(model);
+        this.isSearch = false;
 
         getSections();
 
-        timer = new Timer(60000, new ActionListener() {
+        timer = new Timer(600000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 getSections();
@@ -62,10 +66,33 @@ public class ViewForm extends JFrame {
                 {
                     sectionHeader.setText("");
                     sectionBody.setText("");
+                    return;
                 }
-                Section section = sectionsResponse.getSectionList().get(index);
+                Section section = sections.get(index);
                 sectionHeader.setText(section.getHeader());
                 sectionBody.setText(section.getBody());
+                sectionBody.setCaretPosition(0);
+            }
+        });
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!isSearch)
+                {
+                    if (searchField.getText() != "") {
+                        searchButton.setText("Отмена");
+                        isSearch = true;
+
+                        getSearchSections(searchField.getText());
+                    }
+                }
+                else
+                {
+                    searchButton.setText("Поиск");
+                    isSearch = false;
+
+                    getSections();
+                }
             }
         });
     }
@@ -81,6 +108,37 @@ public class ViewForm extends JFrame {
 
                 sectionService = new SectionService();
                 SectionsResponse sectionsResponse = sectionService.getOrderSections(jwtResponse.getAccessToken());
+
+                return sectionsResponse;
+            }
+            protected void done() {
+                try {
+                    sectionsResponse = get();
+                    sections = sectionsResponse.getSectionList().stream().filter(x -> x.getVisible() == null || x.getVisible()).toList();
+                    sectionList.setSelectedIndex(-1);
+                    model.clear();
+                    model.addAll(sections.stream().map(x -> x.getHeader()).toList());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        worker.execute();
+    }
+
+    private void getSearchSections(String string)
+    {
+        SwingWorker worker = new SwingWorker<SectionsResponse, Void>() {
+            @Override
+            protected SectionsResponse doInBackground() throws Exception {
+                userService = new UserService();
+                JwtResponse jwtResponse = userService.authenticateUserSync(loginRequest);
+
+                sectionService = new SectionService();
+                SectionsResponse sectionsResponse = sectionService.getSearchSections(jwtResponse.getAccessToken(), string);
 
                 return sectionsResponse;
             }
@@ -106,9 +164,8 @@ public class ViewForm extends JFrame {
         setContentPane(new ViewForm(response, loginRequest).panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
-        setSize(1200, 600);
-        setMinimumSize(new Dimension(1000, 600));
-        setResizable(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
     }
