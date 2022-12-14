@@ -3,7 +3,10 @@ package irs.client.irs.Forms;
 import irs.client.irs.WebClient.Services.UserService;
 import irs.server.irs_server.payload.request.LoginRequest;
 import irs.server.irs_server.payload.response.JwtResponse;
+import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +28,8 @@ public class AuthForm extends JFrame {
     @Value("${irs.app.UserPassword}")
     private String UserPassword = "user123";
     private LoginRequest loginRequest;
+    private String text;
+    private Timer clearButton;
 
     public AuthForm(boolean isChangeForm)
     {
@@ -33,17 +38,10 @@ public class AuthForm extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tLogin.getText().equals("") | tPass.getText().equals("")) {
-                    signInB.setForeground(Color.RED);
-                    signInB.setText("Заполните поля логин и пароль");
+                    message("Заполните поля логин и пароль");
                     return;
                 }
-                try {
-                    singIn();
-                }
-                catch (Exception exception) {
-                    JPanel pnl = (JPanel) getContentPane();
-                    JOptionPane.showMessageDialog(pnl, exception.getMessage(), "Warning", JOptionPane.WARNING_MESSAGE);
-                }
+                singIn();
             }
         });
     }
@@ -52,8 +50,19 @@ public class AuthForm extends JFrame {
     {
         UserService userService = new UserService();
         loginRequest = new LoginRequest(tLogin.getText(), tPass.getText());
-        userService.authenticateUser(loginRequest)
-                .subscribe(JwtResponse -> openForm(JwtResponse));
+        try {
+            JwtResponse response = userService.authenticateUserSync(loginRequest);
+            openForm(response);
+        }
+        catch (WebClientRequestException ex)
+        {
+            JPanel pnl = (JPanel) getContentPane();
+            JOptionPane.showMessageDialog(pnl, "Не удаётся соединиться с сервером", "Ошибка", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (Exception ex) {
+            JPanel pnl = (JPanel) getContentPane();
+            JOptionPane.showMessageDialog(pnl, ex.getMessage(), "Ошибка", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     private void openForm(JwtResponse response)
@@ -90,9 +99,33 @@ public class AuthForm extends JFrame {
         }
         else
         {
-            signInB.setForeground(Color.RED);
-            signInB.setText("У вас нет доступа к просмотру");
+            message("У вас нет доступа к просмотру");
         }
+    }
+
+    private void message(String string)
+    {
+        text = signInB.getText();
+        signInB.setText(string);
+        signInB.setForeground(Color.RED);
+        signInB.setEnabled(false);
+
+        clearButton = new Timer(5000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearButton();
+            }
+        });
+
+        clearButton.setRepeats(false);
+        clearButton.start();
+    }
+
+    private void clearButton()
+    {
+        signInB.setForeground(new Color(252, 253, 255));
+        signInB.setText(text);
+        signInB.setEnabled(true);
     }
 
     public void open(){
@@ -101,6 +134,7 @@ public class AuthForm extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setSize(250, 200);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Icons/scooter-Freepik.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);

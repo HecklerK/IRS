@@ -1,10 +1,12 @@
 package irs.server.irs_server.payload.request;
 
+import org.springframework.beans.factory.annotation.Required;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 public class SectionUpdateRequest {
-    @NotBlank
     private Long id;
     @NotBlank
     @Size(min = 3, max = 250)
@@ -12,7 +14,6 @@ public class SectionUpdateRequest {
     @Size(max = 8000)
     private String body;
     private Boolean isVisible;
-    @NotBlank
     private Long userId;
 
     public Long getId() {

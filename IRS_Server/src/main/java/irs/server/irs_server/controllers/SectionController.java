@@ -4,6 +4,7 @@ package irs.server.irs_server.controllers;
 import irs.server.irs_server.models.Order;
 import irs.server.irs_server.models.Section;
 import irs.server.irs_server.models.User;
+import irs.server.irs_server.payload.request.OrderRequest;
 import irs.server.irs_server.payload.request.SectionRequest;
 import irs.server.irs_server.payload.request.SectionUpdateRequest;
 import irs.server.irs_server.payload.response.MessageResponse;
@@ -76,7 +77,7 @@ public class SectionController {
 
     @GetMapping("/getSearchSactions/{string}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> getSearchSections(@PathVariable String string)
+    public ResponseEntity<SectionsResponse> getSearchSections(@PathVariable String string)
     {
         List<Section> sections = sectionRepository.searchAll(string);
         SectionsResponse sectionsResponse = new SectionsResponse();
@@ -85,7 +86,7 @@ public class SectionController {
         if (sections.size() > 0 ) {
             return new ResponseEntity<>(sectionsResponse, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(new SectionsResponse(), HttpStatus.OK);
         }
     }
 
@@ -149,6 +150,29 @@ public class SectionController {
             section.setChangeOn(Instant.now());
 
             sectionRepository.save(section);
+        }
+        catch (Exception ex)
+        {
+            return ResponseEntity
+                    .internalServerError()
+                    .body("Error: " + ex.getMessage());
+        }
+
+        return  ResponseEntity.ok(new MessageResponse("Section update"));
+    }
+
+    @PostMapping("/updateOrderSection")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateOrderSection(@Valid @RequestBody OrderRequest orderRequest)
+    {
+        if (!sectionRepository.existsById(orderRequest.getSection_id())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Section not found!"));
+        }
+
+        try {
+            sectionRepository.updateOrderSection(orderRequest.getSection_id(), orderRequest.getNumber());
         }
         catch (Exception ex)
         {

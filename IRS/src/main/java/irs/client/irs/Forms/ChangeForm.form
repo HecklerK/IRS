@@ -66,8 +66,9 @@
               <background color="-12170933"/>
               <focusTraversalPolicyProvider value="false"/>
               <font name="Source Code Pro" size="22"/>
-              <foreground color="-12170933"/>
-              <selectionForeground color="-5062205"/>
+              <foreground color="-852481"/>
+              <selectionBackground color="-12564920"/>
+              <selectionForeground color="-852481"/>
             </properties>
           </component>
         </children>
@@ -166,7 +167,7 @@
           <focusPainted value="false"/>
           <font name="Source Code Pro" size="14"/>
           <foreground color="-852481"/>
-          <text value="Вверх"/>
+          <text value="Вниз"/>
         </properties>
       </component>
       <component id="d787d" class="javax.swing.JButton" binding="addButton">
@@ -200,7 +201,7 @@
           <focusPainted value="false"/>
           <font name="Source Code Pro" size="14"/>
           <foreground color="-852481"/>
-          <text value="Вниз"/>
+          <text value="Вверх"/>
         </properties>
       </component>
       <component id="92082" class="javax.swing.JButton" binding="saveSectionButton">
@@ -292,7 +293,7 @@
           <forms/>
         </constraints>
         <properties>
-          <font name="Source Code Pro" size="14"/>
+          <font name="Source Code Pro" size="12"/>
           <foreground color="-852481"/>
           <text value=""/>
         </properties>
@@ -320,6 +321,7 @@
         <properties>
           <alignmentY value="0.0"/>
           <background color="-12564920"/>
+          <enabled value="false"/>
           <focusPainted value="false"/>
           <font name="Source Code Pro" size="14"/>
           <foreground color="-852481"/>

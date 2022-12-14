@@ -5,6 +5,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import irs.server.irs_server.models.User;
 import irs.server.irs_server.payload.request.LoginRequest;
+import irs.server.irs_server.payload.request.OrderRequest;
 import irs.server.irs_server.payload.request.SectionRequest;
 import irs.server.irs_server.payload.request.SectionUpdateRequest;
 import irs.server.irs_server.payload.response.JwtResponse;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.web.reactive.function.client.ExchangeFilterFunctions.basicAuthentication;
@@ -73,9 +75,9 @@ public class SectionService {
                 .block();
     }
 
-    public String createSection(String token, SectionRequest request)
+    public HttpStatus createSection(String token, SectionRequest request)
     {
-        return client
+        WebClient.ResponseSpec response = client
                 .put()
                 .uri(Base_URL + "section/createSection")
                 .headers(headers -> {
@@ -83,14 +85,14 @@ public class SectionService {
                     headers.setContentType(MediaType.APPLICATION_JSON);
                 })
                 .body(Mono.just(request), SectionRequest.class)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                .retrieve();
+
+        return Optional.of(response.toBodilessEntity().block().getStatusCode()).get();
     }
 
-    public String updateSection(String token, SectionUpdateRequest request)
+    public HttpStatus updateSection(String token, SectionUpdateRequest request)
     {
-        return client
+        WebClient.ResponseSpec response = client
                 .post()
                 .uri(Base_URL + "section/updateSection")
                 .headers(headers -> {
@@ -98,9 +100,24 @@ public class SectionService {
                     headers.setContentType(MediaType.APPLICATION_JSON);
                 })
                 .body(Mono.just(request), SectionRequest.class)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                .retrieve();
+
+        return Optional.of(response.toBodilessEntity().block().getStatusCode()).get();
+    }
+
+    public HttpStatus updateOrderSection(String token, OrderRequest request)
+    {
+        WebClient.ResponseSpec response = client
+                .post()
+                .uri(Base_URL + "section/updateOrderSection")
+                .headers(headers -> {
+                    headers.setBearerAuth(token);
+                    headers.setContentType(MediaType.APPLICATION_JSON);
+                })
+                .body(Mono.just(request), SectionRequest.class)
+                .retrieve();
+
+        return Optional.of(response.toBodilessEntity().block().getStatusCode()).get();
     }
 
     private Mono<? extends Throwable> handleError(String message) {

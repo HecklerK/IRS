@@ -115,7 +115,7 @@ public class ViewForm extends JFrame {
                 try {
                     sectionsResponse = get();
                     sections = sectionsResponse.getSectionList().stream().filter(x -> x.getVisible() == null || x.getVisible()).toList();
-                    sectionList.setSelectedIndex(-1);
+                    sectionList.clearSelection();
                     model.clear();
                     model.addAll(sections.stream().map(x -> x.getHeader()).toList());
                 } catch (InterruptedException e) {
@@ -145,9 +145,12 @@ public class ViewForm extends JFrame {
             protected void done() {
                 try {
                     sectionsResponse = get();
-                    sectionList.setSelectedIndex(-1);
+                    sections = sectionsResponse.getSectionList().stream().filter(x -> x.getVisible() == null || x.getVisible()).toList();
+                    sectionList.clearSelection();
                     model.clear();
-                    model.addAll(sectionsResponse.getSectionList().stream().map(x -> x.getHeader()).toList());
+                    if (!sections.isEmpty()) {
+                        model.addAll(sections.stream().map(x -> x.getHeader()).toList());
+                    }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (ExecutionException e) {
@@ -166,6 +169,7 @@ public class ViewForm extends JFrame {
         pack();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setResizable(false);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Icons/scooter-Freepik.png")));
         setLocationRelativeTo(null);
         setVisible(true);
     }

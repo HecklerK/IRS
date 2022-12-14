@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -32,6 +33,7 @@ public class UserService {
 
         client = WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .filter(errorHandler())
                 .build();
     }
     public Mono<JwtResponse> authenticateUser(LoginRequest loginRequest)
@@ -42,8 +44,7 @@ public class UserService {
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(loginRequest))
                 .retrieve()
-                .bodyToMono(JwtResponse.class)
-                .doOnError(error -> handleError(error.getMessage()));
+                .bodyToMono(JwtResponse.class);
     }
 
     public JwtResponse authenticateUserSync(LoginRequest loginRequest)
@@ -55,11 +56,20 @@ public class UserService {
                 .body(BodyInserters.fromObject(loginRequest))
                 .retrieve()
                 .bodyToMono(JwtResponse.class)
-                .doOnError(error -> handleError(error.getMessage()))
                 .block();
     }
 
-    private Mono<? extends Throwable> handleError(String message) {
-        return Mono.error(Exception::new);
+    public static ExchangeFilterFunction errorHandler() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+            if (clientResponse.statusCode().is5xxServerError()) {
+                return clientResponse.bodyToMono(String.class)
+                        .flatMap(errorBody -> Mono.error(new Exception(errorBody)));
+            } else if (clientResponse.statusCode().is4xxClientError()) {
+                return clientResponse.bodyToMono(String.class)
+                        .flatMap(errorBody -> Mono.error(new Exception(errorBody)));
+            } else {
+                return Mono.just(clientResponse);
+            }
+        });
     }
 }

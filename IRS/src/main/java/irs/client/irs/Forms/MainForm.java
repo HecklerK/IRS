@@ -3,6 +3,7 @@ package irs.client.irs.Forms;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
@@ -36,6 +37,7 @@ public class MainForm extends JFrame {
         setContentPane(new MainForm().panel);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(250, 120);
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Icons/scooter-Freepik.png")));
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
