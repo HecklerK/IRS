@@ -61,6 +61,13 @@ public class AuthForm extends JFrame {
         }
         catch (Exception ex) {
             JPanel pnl = (JPanel) getContentPane();
+
+            if (ex.getMessage().contains("Unauthorized"))
+            {
+                message("Не удалось авторизоваться");
+                return;
+            }
+
             JOptionPane.showMessageDialog(pnl, ex.getMessage(), "Ошибка", JOptionPane.WARNING_MESSAGE);
         }
     }
@@ -84,8 +91,7 @@ public class AuthForm extends JFrame {
         }
         else
         {
-            signInB.setForeground(Color.RED);
-            signInB.setText("У вас нет доступа к изменению");
+            message("У вас нет доступа к изменению");
         }
     }
 

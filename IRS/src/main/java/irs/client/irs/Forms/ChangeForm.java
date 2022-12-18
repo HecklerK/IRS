@@ -100,7 +100,9 @@ public class ChangeForm extends JFrame {
                 sectionHeader.setText(section.getHeader());
                 sectionBody.setText(section.getBody());
                 sectionBody.setCaretPosition(0);
-                if(section.getVisible() != null && !section.getVisible())
+                if(section.getVisible() != null)
+                    hideCheck.setSelected(!section.getVisible());
+                else
                     hideCheck.setSelected(!section.getVisible());
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy hh:mm").withZone(ZoneId.systemDefault());
@@ -353,8 +355,8 @@ public class ChangeForm extends JFrame {
                 JwtResponse jwtResponse = userService.authenticateUserSync(loginRequest);
 
                 sectionService = new SectionService();
-                SectionsResponse sectionsResponse = sectionService.getSearchSections(jwtResponse.getAccessToken(), string);
 
+                SectionsResponse sectionsResponse = sectionService.getSearchSections(jwtResponse.getAccessToken(), string);
                 return sectionsResponse;
             }
             protected void done() {
@@ -441,6 +443,7 @@ public class ChangeForm extends JFrame {
                     HttpStatus status = get();
 
                     if (status == HttpStatus.OK){
+                        getSections();
                     }
                     else
                     {

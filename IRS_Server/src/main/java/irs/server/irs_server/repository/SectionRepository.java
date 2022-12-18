@@ -20,7 +20,7 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     @Query("SELECT s FROM Order o join o.section s order by o.number")
     List<Section> findAllByOrder();
 
-    @Query("SELECT s FROM Section s WHERE s.header like %?1% AND s.body like %?1%")
+    @Query("SELECT s FROM Section s WHERE s.header like %?1% OR s.body like %?1%")
     List<Section> searchAll(String string);
 
     @Transactional
@@ -28,8 +28,9 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
     @Query(value = "WITH a AS(\n" +
             "SELECT ROW_NUMBER() OVER(ORDER BY number) as rn, number, section_id\n" +
             "FROM orders\n" +
+            "WHERE section_id != ?1\n" +
             ")\n" +
-            "UPDATE a SET number = case when rn >= ?2 AND rn != (select COUNT(*) from orders) then rn + 1 end\n" +
+            "UPDATE a SET number = case when rn >= ?2 then rn + 1 else rn end\n" +
             "OPTION (MAXDOP 1)\n" +
             "UPDATE orders set number = ?2\n" +
             "where section_id = ?1", nativeQuery = true)

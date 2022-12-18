@@ -65,11 +65,14 @@
             <properties>
               <background color="-12170933"/>
               <focusTraversalPolicyProvider value="false"/>
-              <font name="Source Code Pro" size="22"/>
+              <font name="Source Code Pro" size="16"/>
               <foreground color="-852481"/>
               <selectionBackground color="-12564920"/>
               <selectionForeground color="-852481"/>
             </properties>
+            <clientProperties>
+              <html.disable class="java.lang.Boolean" value="false"/>
+            </clientProperties>
           </component>
         </children>
       </scrollpane>

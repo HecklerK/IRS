@@ -75,7 +75,7 @@ public class SectionController {
         }
     }
 
-    @GetMapping("/getSearchSactions/{string}")
+    @GetMapping("/getSearchSections/{string}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<SectionsResponse> getSearchSections(@PathVariable String string)
     {
@@ -83,11 +83,7 @@ public class SectionController {
         SectionsResponse sectionsResponse = new SectionsResponse();
         sectionsResponse.setSectionList(sections);
 
-        if (sections.size() > 0 ) {
-            return new ResponseEntity<>(sectionsResponse, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(new SectionsResponse(), HttpStatus.OK);
-        }
+        return new ResponseEntity<>(sectionsResponse, HttpStatus.OK);
     }
 
     @PutMapping("/createSection")
